@@ -1,4 +1,4 @@
-# Ozeret Sign In <!-- omit in TOC -->
+# CMGC Sign In <!-- omit in TOC -->
 
 *written by Cooper Schwartz*
 

@@ -1,4 +1,4 @@
-/* for use outside of eclipse
+/* for use outside of eclipse */
 @font-face {
 	src: url("/resources/fonts/EBGaramond-Regular.ttf");
 }
@@ -6,8 +6,8 @@
 @font-face {
     src: url("/resources/fonts/TitilliumWeb-Light.ttf");
 } 
-*/
-/* for use in eclipse */
+
+/* for use in eclipse
 @font-face {
 	src: url("../../resources/fonts/EBGaramond-Regular.ttf");
 }
@@ -15,7 +15,7 @@
 @font-face {
     src: url("../../resources/fonts/TitilliumWeb-Light.ttf");
 }
-
+*/
 
 /* colors: gray - #626262; blue - #0a304e */
 
