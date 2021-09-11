@@ -1,0 +1,150 @@
+/* for use outside of eclipse
+@font-face {
+	src: url("/resources/fonts/EBGaramond-Regular.ttf");
+}
+
+@font-face {
+    src: url("/resources/fonts/TitilliumWeb-Light.ttf");
+} 
+*/
+/* for use in eclipse */
+@font-face {
+	src: url("../../resources/fonts/EBGaramond-Regular.ttf");
+}
+
+@font-face {
+    src: url("../../resources/fonts/TitilliumWeb-Light.ttf");
+}
+
+
+/* colors: gray - #626262; blue - #0a304e */
+
+.root {
+	-fx-background-color: #0a304e;
+}
+
+.scroll-pane {
+	-fx-background: #0a304e;
+	-fx-hbar-policy: never;
+}
+
+.scroll-bar .increment-button ,
+.scroll-bar .decrement-button {
+    -fx-background-color: #0a304e;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow{
+    -fx-shape: "";    
+    -fx-padding: 0;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar .thumb:hover {
+	-fx-background-color: #a1a1a1;
+}
+
+.scroll-bar .thumb:pressed {
+	-fx-background-color: #626262;
+}
+
+.scroll-bar .track {
+	-fx-background-color: #0a304e;
+	-fx-border-color: #0a304e;
+}
+
+.dialog-pane:header .header-panel {
+	-fx-background-color: #0a304e;
+}
+
+#header {
+	-fx-font-family: "EB Garamond Regular";
+	-fx-font-size: 50px;
+}
+
+.label {
+	-fx-font-family: "Titillium Web Light";
+	-fx-text-fill: white;
+	-fx-font-size: 14px;
+}
+
+#bunk-label {
+	-fx-font-family: "EB Garamond Regular";
+	-fx-text-fill: white;
+	-fx-font-size: 18px;
+}
+
+.text-area {
+	-fx-font-size: 18px;
+	-fx-font-family: "Titillium Web Light";
+	-fx-text-fill: white;
+	-fx-background-color: #0a304e;
+}
+
+.text-area .content {
+	-fx-background-color: #0a304e;
+}
+
+.text-area:focused .content {
+	-fx-background-color: #0a304e;
+}
+
+.dialog-pane .label {
+	-fx-font-family: "Titillium Web Light";
+	-fx-text-fill: white;
+	-fx-font-size: 12px;
+}
+
+.dialog-pane:header .header-panel .label {
+	-fx-font-size: 20px;
+	-fx-text-fill: white;
+}
+
+.button {
+	-fx-font-family: "Titillium Web Light";
+	-fx-font-size: 12px;
+	-fx-text-fill: white;
+	-fx-background-color: linear-gradient(#a1a1a1, #626262);
+}
+
+.button:hover {
+	-fx-background-color: linear-gradient(#626262, #a1a1a1);
+}
+
+.radiobutton {
+	-fx-font-family: "Titillium Web Light";
+	-fx-text-fill: white;
+	-fx-font-size: 12px;
+}
+
+.info {
+	-fx-font-family: "Monospaced";
+	-fx-font-weight: bolder;
+	-fx-background-color: #0a304e;
+	-fx-border-color: #ffffff;
+	-fx-border-radius: 100px;
+}
+
+.info:hover {
+	-fx-text-fill: #c8c8c8;
+	-fx-border-color: #c8c8c8;
+	-fx-background-color: #0a304e;
+}
+
+#list-button {
+	-fx-font-family: "Titillium Web Light";
+	-fx-font-size: 14px;
+	-fx-text-fill: white;
+	-fx-background-color: transparent;
+}
+
+#list-button:hover {
+	-fx-text-fill: #c8c8c8;
+}
