@@ -13,6 +13,7 @@
 - [Known Bugs](#known-bugs)
   - [*Blank Staff Member (potentially removed)*](#blank-staff-member-potentially-removed)
 - [Changelog](#changelog)
+  - [*Version 2.0 (released 9/10/2021)*](#version-20-released-9102021)
   - [*Version 1.3 (released 3/12/2021)*](#version-13-released-3122021)
   - [*Version 1.2 (released 2/11/2021)*](#version-12-released-2112021)
   - [*Version 1.1 (released 8/7/2020)*](#version-11-released-872020)
@@ -110,6 +111,20 @@ I haven't noticed this bug occurring since before version 1.1 released, so it's 
 ---
 
 ## Changelog
+
+### *Version 2.0 (released 9/10/2021)*
+
+- This version was made for the CMGC to use at their rehearsals. Mostly only user-visible things were changed, and the code was largely not refactored to save on time.
+  - User-visible uses of the word "curfew" were replaced with "rehearsal start time".
+  - User-visible uses of "staff member" were replaced with "member".
+  - The "Ozeret Name" text box and tracking was removed.
+  - The colors were changed from Harlam Blue and Orange to CWRU Blue and Grey.
+  - The fonts were changed from Toonish and Montserrat to Garamond and Titillium.
+  - The "day off" and "shmira" sign-in options were replaced with an "excused absence" option.
+  - Spreadsheet format changes:
+    - "Bunk" column renamed "Part"
+    - "ID" Column renamed "Case ID"
+    - Third sign-in option column added: "Scan ID"
 
 ### *Version 1.3 (released 3/12/2021)*
 
