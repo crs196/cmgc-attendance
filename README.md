@@ -3,6 +3,7 @@
 *written by Cooper Schwartz*
 
 ## **Table of Contents** <!-- omit in TOC -->
+- [README Disclaimer](#readme-disclaimer)
 - [License](#license)
 - [How to Run this Program](#how-to-run-this-program)
   - [*Executable Version*](#executable-version)
@@ -15,6 +16,10 @@
   - [*Version 1.3 (released 3/12/2021)*](#version-13-released-3122021)
   - [*Version 1.2 (released 2/11/2021)*](#version-12-released-2112021)
   - [*Version 1.1 (released 8/7/2020)*](#version-11-released-872020)
+
+## README Disclaimer
+
+This README was written for the original version of this project, which was created for [Camp Harlam](https://campharlam.org/) and can be accessed [here](https://github.com/crs196/harlam-ozeret/). As such, this README does not fully match this version of the project. The screenshots are out of date, and the spreadsheet format has been modified, but other than that, it's still largely correct.
 
 ## License
 
