@@ -402,120 +402,176 @@ public class SignInPane extends GridPane {
 				// only search if an ID was actually entered
 				if (!staffID.isEmpty()) {
 					
-					boolean idFound = false; // staff member has not yet been found
-					for (int i = sheet.getFirstRowNum() + 3; i < sheet.getLastRowNum() + 1; i++) {
-
+					// first, check the name columns to see if a non-unique name has been entered
+					//  the two ID columns are assumed to only hold unique entries
+					int count = 0; // used to keep track of how many times the entered ID was found
+					boolean unique = true; // used as a flag to determine whether this id is unique
+					
+					// check first name first
+					for (int i = sheet.getFirstRowNum() + 2; i < sheet.getLastRowNum() + 1; i++) {
+						
 						String currentID = "";
 						
-						// first check fobCol for matches
+						if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(firstNameCol).getCellType() == CellType.NUMERIC)
+							currentID = (int) sheet.getRow(i).getCell(firstNameCol).getNumericCellValue() + "";
+						else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(firstNameCol).getCellType() == CellType.STRING)
+							currentID = sheet.getRow(i).getCell(firstNameCol).getStringCellValue();
 						
-						if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(fobCol).getCellType() == CellType.NUMERIC)
-							currentID = (int) sheet.getRow(i).getCell(fobCol).getNumericCellValue() + "";
-						else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(fobCol).getCellType() == CellType.STRING)
-							currentID = sheet.getRow(i).getCell(fobCol).getStringCellValue();
+						// if the current row's ID matches the one inputted, the ID was found
+						if (currentID.equals(staffID))
+							count++; // so increment the counter
+					}
+					
+					if (count > 1) {
+						confirmation.setText("Non-unique first name entered. Please use a different sign-in method.");
+						unique = false;
+					}
+					
+					// only bother checking last name column if the ID is still unique after checking first names
+					if (unique) {
+						count = 0; // reset counter
 						
-						// if the current row's ID matches the one inputted, the staff member was found
-						if (currentID.equals(staffID)) {
-
-							idFound = true;
-							LocalDateTime now = LocalDateTime.now(); // save current time in case close to curfew
-
-							// if today's attendance column does not exist or is empty, the staff member is unaccounted for
-							if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol) == null) {
-
-								sheet.getRow(i).createCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
-								signInStatus(i, now);
-								confirmation.setText(getName(i) + " signed in");
-								break; // search is done
-
-							} else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK) {
-
-								sheet.getRow(i).getCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
-								signInStatus(i, now);
-								confirmation.setText(getName(i) + " signed in");
-								break; // search is done
-
-							} else { // if cell exists and is not blank, staff member has already signed in today
-								confirmation.setText(getName(i) + " has already signed in");
-								break; // search is done
-							}
+						// check last name
+						for (int i = sheet.getFirstRowNum() + 2; i < sheet.getLastRowNum() + 1; i++) {
+							
+							String currentID = "";
+							
+							if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(lastNameCol).getCellType() == CellType.NUMERIC)
+								currentID = (int) sheet.getRow(i).getCell(lastNameCol).getNumericCellValue() + "";
+							else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(lastNameCol).getCellType() == CellType.STRING)
+								currentID = sheet.getRow(i).getCell(lastNameCol).getStringCellValue();
+							
+							// if the current row's ID matches the one inputted, the ID was found
+							if (currentID.equals(staffID))
+								count++; // so increment the counter
 						}
 						
-						// then, if idCol is different than fobCol, check idCol for matches
-						if (fobCol != idCol) {
-							
-							if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(idCol).getCellType() == CellType.NUMERIC)
-								currentID = (int) sheet.getRow(i).getCell(idCol).getNumericCellValue() + "";
-							else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(idCol).getCellType() == CellType.STRING)
-								currentID = sheet.getRow(i).getCell(idCol).getStringCellValue();
-							
-							// if the current row's ID matches the one inputted, the staff member was found
-							if (currentID.equals(staffID)) {
-
-								idFound = true;
-								LocalDateTime now = LocalDateTime.now(); // save current time in case close to curfew
-
-								// if today's attendance column does not exist or is empty, the staff member is unaccounted for
-								if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol) == null) {
-
-									sheet.getRow(i).createCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
-									signInStatus(i, now);
-									confirmation.setText(getName(i) + " signed in");
-									break; // search is done
-
-								} else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK) {
-
-									sheet.getRow(i).getCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
-									signInStatus(i, now);
-									confirmation.setText(getName(i) + " signed in");
-									break; // search is done
-
-								} else { // if cell exists and is not blank, staff member has already signed in today
-									confirmation.setText(getName(i) + " has already signed in");
-									break; // search is done
-								}
-							}
-						}
-						
-						// then, if nameCol is different than idCol and fobCol, check nameCol for matches
-						if (firstNameCol != idCol && firstNameCol != fobCol) {
-							
-							if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(firstNameCol).getCellType() == CellType.NUMERIC)
-								currentID = (int) sheet.getRow(i).getCell(firstNameCol).getNumericCellValue() + "";
-							else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(firstNameCol).getCellType() == CellType.STRING)
-								currentID = sheet.getRow(i).getCell(firstNameCol).getStringCellValue();
-							
-							// if the current row's ID matches the one inputted, the staff member was found
-							if (currentID.equals(staffID)) {
-
-								idFound = true;
-								LocalDateTime now = LocalDateTime.now(); // save current time in case close to curfew
-
-								// if today's attendance column does not exist or is empty, the staff member is unaccounted for
-								if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol) == null) {
-
-									sheet.getRow(i).createCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
-									signInStatus(i, now);
-									confirmation.setText(getName(i) + " signed in");
-									break; // search is done
-
-								} else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK) {
-
-									sheet.getRow(i).getCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
-									signInStatus(i, now);
-									confirmation.setText(getName(i) + " signed in");
-									break; // search is done
-
-								} else { // if cell exists and is not blank, staff member has already signed in today
-									confirmation.setText(getName(i) + " has already signed in");
-									break; // search is done
-								}
-							}
+						if (count > 1) {
+							confirmation.setText("Non-unique last name entered. Please use a different sign-in method.");
+							unique = false;
 						}
 					}
 					
-					if (!idFound && !staffID.isEmpty())
-						confirmation.setText("Staff member " + staffID + " not found");
+					
+					// only bother signing person in if a unique ID was entered
+					if (unique) {
+						
+						boolean idFound = false; // staff member has not yet been found
+						for (int i = sheet.getFirstRowNum() + 2; i < sheet.getLastRowNum() + 1; i++) {
+
+							String currentID = "";
+							
+							// first check fobCol for matches
+							
+							if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(fobCol).getCellType() == CellType.NUMERIC)
+								currentID = (int) sheet.getRow(i).getCell(fobCol).getNumericCellValue() + "";
+							else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(fobCol).getCellType() == CellType.STRING)
+								currentID = sheet.getRow(i).getCell(fobCol).getStringCellValue();
+							
+							// if the current row's ID matches the one inputted, the staff member was found
+							if (currentID.equals(staffID)) {
+
+								idFound = true;
+								LocalDateTime now = LocalDateTime.now(); // save current time in case close to curfew
+
+								// if today's attendance column does not exist or is empty, the staff member is unaccounted for
+								if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol) == null) {
+
+									sheet.getRow(i).createCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
+									signInStatus(i, now);
+									confirmation.setText(getName(i) + " signed in");
+									break; // search is done
+
+								} else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK) {
+
+									sheet.getRow(i).getCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
+									signInStatus(i, now);
+									confirmation.setText(getName(i) + " signed in");
+									break; // search is done
+
+								} else { // if cell exists and is not blank, staff member has already signed in today
+									confirmation.setText(getName(i) + " has already signed in");
+									break; // search is done
+								}
+							}
+							
+							// then, if idCol is different than fobCol, check idCol for matches
+							if (fobCol != idCol) {
+								
+								if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(idCol).getCellType() == CellType.NUMERIC)
+									currentID = (int) sheet.getRow(i).getCell(idCol).getNumericCellValue() + "";
+								else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(idCol).getCellType() == CellType.STRING)
+									currentID = sheet.getRow(i).getCell(idCol).getStringCellValue();
+								
+								// if the current row's ID matches the one inputted, the staff member was found
+								if (currentID.equals(staffID)) {
+
+									idFound = true;
+									LocalDateTime now = LocalDateTime.now(); // save current time in case close to curfew
+
+									// if today's attendance column does not exist or is empty, the staff member is unaccounted for
+									if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol) == null) {
+
+										sheet.getRow(i).createCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
+										signInStatus(i, now);
+										confirmation.setText(getName(i) + " signed in");
+										break; // search is done
+
+									} else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK) {
+
+										sheet.getRow(i).getCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
+										signInStatus(i, now);
+										confirmation.setText(getName(i) + " signed in");
+										break; // search is done
+
+									} else { // if cell exists and is not blank, staff member has already signed in today
+										confirmation.setText(getName(i) + " has already signed in");
+										break; // search is done
+									}
+								}
+							}
+							
+							// then, if firstNameCol is different than idCol and fobCol, check firstNameCol for matches
+							if (firstNameCol != idCol && firstNameCol != fobCol) {
+								
+								if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(firstNameCol).getCellType() == CellType.NUMERIC)
+									currentID = (int) sheet.getRow(i).getCell(firstNameCol).getNumericCellValue() + "";
+								else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(firstNameCol).getCellType() == CellType.STRING)
+									currentID = sheet.getRow(i).getCell(firstNameCol).getStringCellValue();
+								
+								// if the current row's ID matches the one inputted, the staff member was found
+								if (currentID.equals(staffID)) {
+
+									idFound = true;
+									LocalDateTime now = LocalDateTime.now(); // save current time in case close to curfew
+
+									// if today's attendance column does not exist or is empty, the staff member is unaccounted for
+									if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol) == null) {
+
+										sheet.getRow(i).createCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
+										signInStatus(i, now);
+										confirmation.setText(getName(i) + " signed in");
+										break; // search is done
+
+									} else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK) {
+
+										sheet.getRow(i).getCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
+										signInStatus(i, now);
+										confirmation.setText(getName(i) + " signed in");
+										break; // search is done
+
+									} else { // if cell exists and is not blank, staff member has already signed in today
+										confirmation.setText(getName(i) + " has already signed in");
+										break; // search is done
+									}
+								}
+							}
+						}
+						
+						if (!idFound && !staffID.isEmpty())
+							confirmation.setText("Member " + staffID + " not found");
+					}
+					
 				} else
 					confirmation.setText("No ID entered");
 				
