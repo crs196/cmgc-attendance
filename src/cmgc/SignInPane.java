@@ -606,11 +606,8 @@ public class SignInPane extends GridPane {
 							// then, if firstNameCol and lastNameCol are different, check the full name
 							if (firstNameCol != lastNameCol) {
 								
-								//TODO
-								if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(lastNameCol).getCellType() == CellType.NUMERIC)
-									currentID = (int) sheet.getRow(i).getCell(lastNameCol).getNumericCellValue() + "";
-								else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(lastNameCol).getCellType() == CellType.STRING)
-									currentID = sheet.getRow(i).getCell(lastNameCol).getStringCellValue();
+								
+								currentID = getName(i); // get current staff member name
 								
 								// if the current row's ID matches the one inputted, the staff member was found
 								if (currentID.equals(staffID)) {
@@ -882,7 +879,7 @@ public class SignInPane extends GridPane {
 										staffRow.getCell(todayCol).setCellStyle(onTime);
 										
 										// print a confirmation
-										confirmation.setText(staffMember.getText() + " signed in as on Excused Absence");
+										confirmation.setText(staffMember.getText() + " marked as having an Excused Absence");
 
 									}
 									else if (options.getResult().getText().equals("Sign In")) {
