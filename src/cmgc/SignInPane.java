@@ -831,7 +831,7 @@ public class SignInPane extends GridPane {
 						if ((sheet.getRow(i) != null) && (sheet.getRow(i).getCell(todayCol) == null || 
 								sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK)) {
 
-							Button staffMember = new Button(sheet.getRow(i).getCell(firstNameCol).getStringCellValue());
+							Button staffMember = new Button(getName(i));
 							staffMember.setId("list-button");
 							staffMember.setMinWidth(USE_PREF_SIZE);
 							HBox staffNameBox = new HBox(15);
