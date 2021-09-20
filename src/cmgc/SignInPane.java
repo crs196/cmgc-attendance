@@ -69,7 +69,7 @@ public class SignInPane extends GridPane {
 	private String infoText;
 
 	// used to track which column holds each piece of information
-	private int bunkCol, nameCol, idCol, fobCol, ontimeCol, lateCol, absentCol, todayCol;
+	private int bunkCol, firstNameCol, lastNameCol, idCol, fobCol, ontimeCol, lateCol, absentCol, todayCol;
 
 	public SignInPane(Stage s) {
 		super();
@@ -139,9 +139,9 @@ public class SignInPane extends GridPane {
 	private void readHeaderRow() {
 
 		XSSFRow headerRow = sheet.getRow(0);
-		boolean bunkExists = false, nameExists = false, idExists = false,
-				fobExists = false, ontimeExists = false, lateExists = false,
-				absentExists = false, todayExists = false;
+		boolean bunkExists = false, firstNameExists = false, lastNameExists = false, 
+				idExists = false, fobExists = false, ontimeExists = false, 
+				lateExists = false, absentExists = false, todayExists = false;
 		boolean curfewToday = (LocalDate.now().compareTo(curfew.toLocalDate()) == 0);
 
 		// run through all cells in header row to assign column trackers
@@ -155,9 +155,13 @@ public class SignInPane extends GridPane {
 					bunkCol = i;
 					bunkExists = true;
 					break;
-				case "name":
-					nameCol = i;
-					nameExists = true;
+				case "first name":
+					firstNameCol = i;
+					firstNameExists = true;
+					break;
+				case "last name":
+					lastNameCol = i;
+					lastNameExists = true;
 					break;
 				case "case id":
 					idCol = i;
@@ -197,8 +201,8 @@ public class SignInPane extends GridPane {
 			}
 		}
 		
-		// if the bunk and/or name columns don't exist, this spreadsheet is invalid, so don't continue
-		if (!bunkExists || !nameExists) {
+		// if the bunk and/or at least one of the name columns don't exist, this spreadsheet is invalid, so don't continue
+		if (!bunkExists || !(firstNameExists || lastNameExists)) {
 			Alert fileNotAccessible = new Alert(AlertType.ERROR, "The chosen file \"" + attendanceFile.getName() + "\" is formatted incorrecly.\n"
 					+ "Please choose a different file.");
 			fileNotAccessible.setTitle("Attendance File Not Formatted Correctly");
@@ -209,12 +213,18 @@ public class SignInPane extends GridPane {
 			Platform.exit();
 		}
 
-		// if there is no column labeled "Case ID", set the Case ID column to be the name column
+		// if there is no column labeled "First Name", set the first name column to be the last name column
+		if (!firstNameExists)
+			idCol = lastNameCol;
+		// if there is no column labeled "Last Name", set the last name column to be the first name column
+		if (!lastNameExists)
+			idCol = firstNameCol;
+		// if there is no column labeled "Case ID", set the Case ID column to be the first name column
 		if (!idExists)
-			idCol = nameCol;
-		// if there is no column labeled "Scan ID", set the Scan ID column to be the name column
+			idCol = firstNameCol;
+		// if there is no column labeled "Scan ID", set the Scan ID column to be the first name column
 		if (!fobExists)
-			fobCol = nameCol;
+			fobCol = firstNameCol;
 		// if any of the summary statistic columns don't exist, set the respective tracker to -1 to signify that
 		if (!ontimeExists)
 			ontimeCol = -1;
@@ -415,18 +425,18 @@ public class SignInPane extends GridPane {
 
 								sheet.getRow(i).createCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
 								signInStatus(i, now);
-								confirmation.setText(sheet.getRow(i).getCell(nameCol).getStringCellValue() + " signed in");
+								confirmation.setText(getName(i) + " signed in");
 								break; // search is done
 
 							} else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK) {
 
 								sheet.getRow(i).getCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
 								signInStatus(i, now);
-								confirmation.setText(sheet.getRow(i).getCell(nameCol).getStringCellValue() + " signed in");
+								confirmation.setText(getName(i) + " signed in");
 								break; // search is done
 
 							} else { // if cell exists and is not blank, staff member has already signed in today
-								confirmation.setText(sheet.getRow(i).getCell(nameCol).getStringCellValue() + " has already signed in");
+								confirmation.setText(getName(i) + " has already signed in");
 								break; // search is done
 							}
 						}
@@ -450,30 +460,30 @@ public class SignInPane extends GridPane {
 
 									sheet.getRow(i).createCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
 									signInStatus(i, now);
-									confirmation.setText(sheet.getRow(i).getCell(nameCol).getStringCellValue() + " signed in");
+									confirmation.setText(getName(i) + " signed in");
 									break; // search is done
 
 								} else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK) {
 
 									sheet.getRow(i).getCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
 									signInStatus(i, now);
-									confirmation.setText(sheet.getRow(i).getCell(nameCol).getStringCellValue() + " signed in");
+									confirmation.setText(getName(i) + " signed in");
 									break; // search is done
 
 								} else { // if cell exists and is not blank, staff member has already signed in today
-									confirmation.setText(sheet.getRow(i).getCell(nameCol).getStringCellValue() + " has already signed in");
+									confirmation.setText(getName(i) + " has already signed in");
 									break; // search is done
 								}
 							}
 						}
 						
 						// then, if nameCol is different than idCol and fobCol, check nameCol for matches
-						if (nameCol != idCol && nameCol != fobCol) {
+						if (firstNameCol != idCol && firstNameCol != fobCol) {
 							
-							if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(nameCol).getCellType() == CellType.NUMERIC)
-								currentID = (int) sheet.getRow(i).getCell(nameCol).getNumericCellValue() + "";
-							else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(nameCol).getCellType() == CellType.STRING)
-								currentID = sheet.getRow(i).getCell(nameCol).getStringCellValue();
+							if((sheet.getRow(i) != null) && sheet.getRow(i).getCell(firstNameCol).getCellType() == CellType.NUMERIC)
+								currentID = (int) sheet.getRow(i).getCell(firstNameCol).getNumericCellValue() + "";
+							else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(firstNameCol).getCellType() == CellType.STRING)
+								currentID = sheet.getRow(i).getCell(firstNameCol).getStringCellValue();
 							
 							// if the current row's ID matches the one inputted, the staff member was found
 							if (currentID.equals(staffID)) {
@@ -486,18 +496,18 @@ public class SignInPane extends GridPane {
 
 									sheet.getRow(i).createCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
 									signInStatus(i, now);
-									confirmation.setText(sheet.getRow(i).getCell(nameCol).getStringCellValue() + " signed in");
+									confirmation.setText(getName(i) + " signed in");
 									break; // search is done
 
 								} else if ((sheet.getRow(i) != null) && sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK) {
 
 									sheet.getRow(i).getCell(todayCol).setCellValue(now.format(DateTimeFormatter.ofPattern("h:mm a")));
 									signInStatus(i, now);
-									confirmation.setText(sheet.getRow(i).getCell(nameCol).getStringCellValue() + " signed in");
+									confirmation.setText(getName(i) + " signed in");
 									break; // search is done
 
 								} else { // if cell exists and is not blank, staff member has already signed in today
-									confirmation.setText(sheet.getRow(i).getCell(nameCol).getStringCellValue() + " has already signed in");
+									confirmation.setText(getName(i) + " has already signed in");
 									break; // search is done
 								}
 							}
@@ -511,6 +521,12 @@ public class SignInPane extends GridPane {
 				
 				if (extraStage.isShowing())
 					viewUnaccounted.fire();
+			}
+			
+			// given a staff member (via row number), return the staff member's full name
+			public String getName(int rowNum) {
+				return sheet.getRow(rowNum).getCell(firstNameCol).getStringCellValue()
+						+ " " + sheet.getRow(rowNum).getCell(lastNameCol).getStringCellValue();
 			}
 
 			// given a staff member (via row number) and sign-in time, 
@@ -691,7 +707,7 @@ public class SignInPane extends GridPane {
 						if ((sheet.getRow(i) != null) && (sheet.getRow(i).getCell(todayCol) == null || 
 								sheet.getRow(i).getCell(todayCol).getCellType() == CellType.BLANK)) {
 
-							Button staffMember = new Button(sheet.getRow(i).getCell(nameCol).getStringCellValue());
+							Button staffMember = new Button(sheet.getRow(i).getCell(firstNameCol).getStringCellValue());
 							staffMember.setId("list-button");
 							staffMember.setMinWidth(USE_PREF_SIZE);
 							HBox staffNameBox = new HBox(15);
